@@ -1,0 +1,30 @@
+# Security & Sensitive Info
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.cert
+*.token
+credentials.json
+secrets.json
+
+# Local agent memory, state & caches
+.claude-mem/
+.ecc/
+*.db
+*.sqlite
+*.sqlite3
+*.log
+logs/
+
+# Dependencies & Build Artefacts
+node_modules/
+dist/
+build/
+.cache/
+.turbo/
+
+# OS files
+.DS_Store
+Thumbs.db
