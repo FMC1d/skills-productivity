@@ -32,7 +32,7 @@ El handoff dejó de tener un solo lugar. Ahora tiene tres, y cada uno sirve a un
 
 | Destino | Lector | Qué recibe |
 |---|---|---|
-| `Z:\AgenticEcosystem\_handoffs\<proyecto>\` | agente que retoma | handoff completo, crudo, técnico |
+| `_handoffs/<project>/` | agente que retoma | handoff completo, crudo, técnico |
 | `vault/cristalizaciones/` | agentes + búsqueda semántica | digest de aprendizaje, entra al grafo |
 | Notion, doc `Estado — <Proyecto>` | engineer | avance + decisiones abiertas, nada más |
 
@@ -57,15 +57,15 @@ El criterio para saber si algo va a Notion: **¿esto requiere que engineer decid
 
 ### 1. Handoff completo, local (SIEMPRE)
 
-`Z:\AgenticEcosystem\_handoffs\<proyecto>\YYYY-MM-DD-<slug>.md`
+`_handoffs/<project>/YYYY-MM-DD-<slug>.md`
 
-donde `<proyecto>` es el directorio de proyecto activo en kebab-case (ej: `metodo-icm`, `AgenticEcosystem-systems`, `the-agentic-company`, `skill-library`). Crear el directorio si no existe.
+donde `<project>` es el directorio de proyecto activo en kebab-case. Crear el directorio si no existe.
 
 Este paso no es opcional y no depende de que haya red ni de que Composio responda.
 
 ### 2. Cristalización en el vault (LLM Wiki)
 
-`Z:\AgenticEcosystem\Agentic Systems\_brand\knowledge\vault\cristalizaciones\YYYY-MM-DD-<slug>.md`
+`vault/cristalizaciones/YYYY-MM-DD-<slug>.md`
 
 Es la operación `crystallize` definida en `_schema.md` (v2). El vault está gitignoreado: no aparece en `git status`, eso es normal.
 
@@ -98,7 +98,7 @@ ejecutiva: si | no
 
 Ante la duda, `no`. Notion inflado deja de leerse.
 
-Aplican las reglas duras del schema: mínimo 2 wikilinks, fuentes declaradas, sin métricas inventadas, y **sin datos personales de leads o contactos** (Ley 21.719: esos viven en Zoho CRM y Convex, la wiki solo referencia dónde están).
+Aplican las reglas duras del schema: mínimo 2 wikilinks, fuentes declaradas, sin métricas inventadas, y **sin datos personales de leads o contactos** (Ley 21.719 / GDPR: esos viven en el CRM y BD, la wiki solo referencia dónde están).
 
 ### 3. Resumen ejecutivo a Notion (SOLO si `ejecutiva: si`)
 
@@ -106,14 +106,10 @@ Si la cristalización quedó marcada `ejecutiva: no`, **este paso se salta**. De
 
 Si quedó `ejecutiva: si`:
 
-- Destino: doc `Estado — <Proyecto>` en el Workspace AgenticEcosystem (Notion),
-  workspace "engineer ALONSO MARTINEZ CID's Notion", `workspace_id 87d1e31a-7b26-4997-bd3e-86c624c17b3c`,
-  bajo la página raíz "AgenticEcosystem — Segundo Cerebro".
+- Destino: doc `Estado — <Proyecto>` en el Workspace Notion configurado, bajo la página raíz del proyecto.
 - Se hace **append** al doc de estado con `NOTION_ADD_MULTIPLE_PAGE_CONTENT`. No se crea un doc nuevo por sesión: el doc `Estado — <Proyecto>` es el agregado vivo del proyecto.
 - Si el doc `Estado — <Proyecto>` no existe todavía, buscarlo primero con `NOTION_SEARCH_NOTION_PAGE` y recién ahí crearlo con `NOTION_CREATE_NOTION_PAGE`.
-- Vía: Composio, toolkit `notion` (conexión `notion_swab-poxy`). Verificar con
-  `COMPOSIO_MANAGE_CONNECTIONS` (`action: "list"`, `toolkits: [{"name": "notion", "action": "list"}]`)
-  si hay dudas de que apunte al workspace correcto.
+- Vía: Composio o integración Notion configurada.
 - Si Composio o Notion no están disponibles: guardar local + vault, avisar que el push a Notion quedó pendiente, y seguir. **NO bloquear el handoff por esto.**
 
 Formato del bloque que se agrega (breve, 5 a 10 líneas máximo):
@@ -124,7 +120,7 @@ Formato del bloque que se agrega (breve, 5 a 10 líneas máximo):
 **Decisiones pendientes (engineer):**
 - <decisión 1, con la opción recomendada y por qué>
 - <decisión 2>
-**Detalle:** handoff completo en `Z:\AgenticEcosystem\_handoffs\<proyecto>\<archivo>.md`
+**Detalle:** handoff completo en `_handoffs/<project>/<archivo>.md`
 ```
 
 Nada de detalle técnico en ese bloque. Si engineer quiere el detalle, la última línea le dice dónde está.
@@ -141,7 +137,7 @@ Los handoffs siguen la lógica del Método ICM (Router, Habitaciones, Workspace)
 
 ## Checklist de cierre
 
-- [ ] Handoff completo escrito en `Z:\AgenticEcosystem\_handoffs\<proyecto>\`
+- [ ] Handoff completo escrito en `_handoffs/<project>/`
 - [ ] Cristalización escrita en `vault/cristalizaciones/` con frontmatter v2 + `ejecutiva`
 - [ ] Wikilinks agregados (mínimo 2) y entrada en `_log.md` del vault
 - [ ] Si `ejecutiva: si`: append al doc `Estado — <Proyecto>` en Notion
@@ -150,5 +146,5 @@ Los handoffs siguen la lógica del Método ICM (Router, Habitaciones, Workspace)
 
 ## Referencias
 
-- Schema del vault (frontmatter v2, decay, relaciones tipadas, privacidad): `Z:\AgenticEcosystem\Agentic Systems\_brand\knowledge\vault\_schema.md`
-- Plan de integración que originó D6 y D8: `Z:\AgenticEcosystem\Agentic Systems\docs\impl-plans\2026-07-21-integracion-agentmemory-headroom-llm-wiki.md`
+- Schema del vault (frontmatter v2, decay, relaciones tipadas, privacidad): `vault/_schema.md`
+- Convenciones de persistencia y memoria entre sesiones de agentes.
